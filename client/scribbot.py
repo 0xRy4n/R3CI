@@ -1,13 +1,11 @@
 import math, myro, random
 
 class ScribBot:
-	uniqueID = ""
 	coordOffset = [0,0]
 	robot = None
 
 	# Generates random ASCII string to be used as unique identifier.
-	def __init__(self, offset, com):
-		self.uniqueID = __genUniqueID()
+	def __init__(self, com, offset):
 		self.coordOffset = offset
 		self.robot = myro.makeRobot("Scribbler", com)
 
@@ -15,13 +13,13 @@ class ScribBot:
 		retVal = False
 
 		if direction.upper() == "LEFT" or direction.upper() == "0":
-			robot.turnBy(270)
+			self.robot.turnBy(270)
 			retVal = 2
 		if direction.upper() == "RIGHT" or direction.upper() = "2":
-			robot.turnBy(90)
+			self.robot.turnBy(90)
 			retVal = 0
 		if type(direction) is int and direction <= 360:
-			robot.turnBy(direction)
+			self.robot.turnBy(direction)
 			retVal = True
 
 		return(retVal)
@@ -34,23 +32,23 @@ class ScribBot:
 		y = distance * math.sin(bot1angle * (math.pi / 180))
 
 		if move:
-			robot.moveBy(x,y)
+			self.robot.moveBy(x,y)
 
 		retVal = [x,y]
 		return(retVal)
 
 	def turnToFace(self, uniqueID):
-		bot1x, bot1y = getPosition()
-		bot1angle = getAngle()
+		bot1x, bot1y = self.robot.getPosition()
+		bot1angle = self.robot.getAngle()
 		bot2x, bot2y = None # TODO
 
 		x2 = bot2x - bot1x
 		y2 = bot2y - bot1y
 		r = math.sqrt(x2**2 + y2**2)
-		x1, y1 = forward(r, move=False)
+		x1, y1 = self.forward(r, move=False)
 
 		turnAngle = math.atan((y))
-		robot.turnBy(turnAngle)
+		self.robot.turnBy(turnAngle)
 	
 	def getAvgObstacle(self):
 		count = 0
@@ -59,7 +57,7 @@ class ScribBot:
 			obstacleSum = 0
 			# Checks sensor 4 times and gets average.
 			for i in range(0,4):
-				obstacleSum += robot.getObstacle(count)
+				obstacleSum += self.robot.getObstacle(count)
 			obstacleVals.append(obstacleSum / 4)
 			count += 1
 
@@ -68,24 +66,24 @@ class ScribBot:
 	def avoidObstacles(self):
 		retVal = False
 		threshold = 3000 	# If greater than 3000 assume obstacle in front of robot. Value might need tinkering.
-		obstacleVals = getAvgObstacle()
+		obstacleVals = self.getAvgObstacle()
 
 		if obstacleVals[1] > threshold:
 			retVal, avoiding = True
 			obstacleDir = None # Holds the number value of the sensor that is facing the obstacle after a turn.
 
 			if obstacleVals[0] < obstacleVals[2]:
-				obstacleDir = robot.turnLeft()
+				obstacleDir = self.robot.turnLeft()
 
 			elif obstacleVals[2] < obstacleVals[0]:
-				obstacleDir = robot.turnRight()
+				obstacleDir = self.robot.turnRight()
 
 			else:
 				x = random.randint(0,1)
 				if x == 1:
-					obstacleDir = robot.turnRight()
+					obstacleDir = self.robot.turnRight()
 				else:
-					obstacleDir = robot.turnLeft()
+					obstacleDir = self.robot.turnLeft()
 
 			turnCount = 0
 			displacement = 0
@@ -96,7 +94,7 @@ class ScribBot:
 				if turnCount == 0:
 					displacement += 50
 
-				obstacleVals = getAvgObstacle()
+				obstacleVals = self.getAvgObstacle()
 				if obstacleVals[obstacleDir] < threshold:
 					self.turn(str(obstacleDir))
 					turnCount += 1
