@@ -1,112 +1,71 @@
-import math, myro, random
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import math
+import myro
+import random
+
 
 class ScribBot:
-	coordOffset = [0,0]
-	robot = None
 
-	# Generates random ASCII string to be used as unique identifier.
-	def __init__(self, com, offset):
-		self.coordOffset = offset
-		self.robot = myro.makeRobot("Scribbler", com)
+    def __init__(self, com, offset, name):
+        self.coordOffset = offset
+        self.robot = myro.makeRobot('Scribbler', com)
+        self.name = name
+        self.communicator = # r3ci.com.Client(SERVER, PORT, NAME)
 
-	def turn(self, direction):
-		retVal = False
+        self.uniqueID = # self.communicator.send("reg", {"ocvid":name})
 
-		if direction.upper() == "LEFT" or direction.upper() == "0":
-			self.robot.turnBy(270)
-			retVal = 2
-		if direction.upper() == "RIGHT" or direction.upper() = "2":
-			self.robot.turnBy(90)
-			retVal = 0
-		if type(direction) is int and direction <= 360:
-			self.robot.turnBy(direction)
-			retVal = True
+    # Turns the robot.
+    # Parameter 'direction' defines direction to turn in.
+    # If 'direction' = 'LEFT', turns 270. If direction = 'RIGHT', turns 90. Else, if direction is an integer, turns by said integer. 
+    # Units are in degrees.
+    def turn(self, direction):
+        retVal = False
 
-		return(retVal)
+        if direction.upper() == 'LEFT' or direction.upper() == '0':
+            self.robot.turnBy(270)
+            retVal = 2
 
-	# move can be passed as false to return x and y without moving the robot
-	def forward(self, distance, move=True):
-		retVal = False
+        if direction.upper() == 'RIGHT' or direction.upper() == '2':
+            self.robot.turnBy(90)
+            retVal = 0
 
-		x = distance * math.cos(bot1angle * (math.pi / 180))
-		y = distance * math.sin(bot1angle * (math.pi / 180))
+        if type(direction) is int and direction <= 360:
+            self.robot.turnBy(direction)
+            retVal = True
 
-		if move:
-			self.robot.moveBy(x,y)
+        return retVal
 
-		retVal = [x,y]
-		return(retVal)
+    # Uses the Fluke's camera to snap a picture. 
+    # Parameter 'size' defines the resolution of the photo. Defaults to 'small', 'large' is also an option.
+    def takePic(self, size="small"):
+    	retVal = False
 
-	def turnToFace(self, uniqueID):
-		bot1x, bot1y = self.robot.getPosition()
-		bot1angle = self.robot.getAngle()
-		bot2x, bot2y = None # TODO
+    	self.robot.setPicSize(size) # Defines large or small picture. Small is orders of magnitude faster.
+    	try:
+    		picture = takePicture("jpeg-fast") 
+    		retVal = picture
 
-		x2 = bot2x - bot1x
-		y2 = bot2y - bot1y
-		r = math.sqrt(x2**2 + y2**2)
-		x1, y1 = self.forward(r, move=False)
+    	except Exception as e:
+    		print("Failed to take picture. Caught: {}".format(e))
 
-		turnAngle = math.atan((y))
-		self.robot.turnBy(turnAngle)
-	
-	def getAvgObstacle(self):
-		count = 0
-		obstacleVals = [] # Index 0 holds left, 1 holds center, 2 holds right
-		while count <= 2:
-			obstacleSum = 0
-			# Checks sensor 4 times and gets average.
-			for i in range(0,4):
-				obstacleSum += self.robot.getObstacle(count)
-			obstacleVals.append(obstacleSum / 4)
-			count += 1
+    	return retVal
 
-		return(obstacleVals)
 
-	def avoidObstacles(self):
-		retVal = False
-		threshold = 3000 	# If greater than 3000 assume obstacle in front of robot. Value might need tinkering.
-		obstacleVals = self.getAvgObstacle()
+    def getAvgObstacle(self):
+        count = 0
+        obstacleVals = []  # Index 0 holds left, 1 holds center, 2 holds right
+        while count <= 2:
+            obstacleSum = 0
 
-		if obstacleVals[1] > threshold:
-			retVal, avoiding = True
-			obstacleDir = None # Holds the number value of the sensor that is facing the obstacle after a turn.
+            # Checks sensor 4 times and gets average.
 
-			if obstacleVals[0] < obstacleVals[2]:
-				obstacleDir = self.robot.turnLeft()
-
-			elif obstacleVals[2] < obstacleVals[0]:
-				obstacleDir = self.robot.turnRight()
-
-			else:
-				x = random.randint(0,1)
-				if x == 1:
-					obstacleDir = self.robot.turnRight()
-				else:
-					obstacleDir = self.robot.turnLeft()
-
-			turnCount = 0
-			displacement = 0
-
-			while avoiding:
-				self.forward(50)
-
-				if turnCount == 0:
-					displacement += 50
-
-				obstacleVals = self.getAvgObstacle()
-				if obstacleVals[obstacleDir] < threshold:
-					self.turn(str(obstacleDir))
-					turnCount += 1
-				
-				if turnCount == 3:
-					self.forward(displacement)
-					if obstacleDir == 2:
-						self.turn("0")
-					else:
-						self.turn("2")
-					avoiding = False
+            for i in range(0, 4):
+                obstacleSum += self.robot.getObstacle(count)
+            obstacleVals.append(obstacleSum / 4)
+            count += 1
 
 
 
 
+			
