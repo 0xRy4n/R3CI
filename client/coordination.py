@@ -1,17 +1,18 @@
 class Coordination:
 
-	def __init__(self, robot, communicator):
-
+	def __init__(self, robot, communicator, UID):
 		self.robot = robot
 		self.communicator = communicator
-
+		self.UID = UID
 
 	def updateCoords(self):
-		communicator.send()
+
+		x, y = self.robot.getPosition() 
+		communicator.send(self.communicator.send("db", "UID": { {"set": {"x":x, "y":y} } }) # Requests to set the x and y vals associated to UID in the database.
 
 
 	# Moves the object self.robot forward while keeping track of its position on the coordinate map.
-	# Parameter 'distance' is the distance in you want to move.
+	# Parameter 'distance' is the distance  in you want to move.
 	# Optionally, you can pass in 'move = False' if you simply want to simulate where the new coordinate position of the robot would be, without actually moving.
 	# Units are in millimeters.
     def moveForward(self, distance, move = True):

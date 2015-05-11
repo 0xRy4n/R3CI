@@ -12,44 +12,50 @@ class ScribBot:
         self.robot = myro.makeRobot('Scribbler', com)
         self.name = name
         self.communicator = # r3ci.com.Client(SERVER, PORT, NAME)
-
         self.uniqueID = # self.communicator.send("reg", {"ocvid":name})
+        self.check = lambda retVal: assert retVal != False
 
-    # Turns the robot.
-    # Parameter 'direction' defines direction to turn in.
-    # If 'direction' = 'LEFT', turns 270. If direction = 'RIGHT', turns 90. Else, if direction is an integer, turns by said integer. 
-    # Units are in degrees.
+
+    # Function: 	turn()
+    # Description:	Turns the robot to a given direction.
+    # Parameters: 	direction -- Direction to turn robot to. Can be 'LEFT', 'RIGHT' or a int 0-360 representing an angle in degrees.
+    # Returns: 		'2' if parameter direction was 'LEFT', '0' if parameter direction was 'RIGHT', None if parameter was angle 0-360. Anything else returns false.
     def turn(self, direction):
-        retVal = False
+    	retVal = False
 
-        if direction.upper() == 'LEFT' or direction.upper() == '0':
-            self.robot.turnBy(270)
-            retVal = 2
+    	if type(direction) is str:
+    		direction = direction.upper()
 
-        if direction.upper() == 'RIGHT' or direction.upper() == '2':
-            self.robot.turnBy(90)
-            retVal = 0
+	        if direction == 'LEFT':
+	            self.robot.turnBy(270) 
+	            retVal = 2
+	        if direction == 'RIGHT':
+	            self.robot.turnBy(90)
+	            retVal = 0
 
-        if type(direction) is int and direction <= 360:
-            self.robot.turnBy(direction)
-            retVal = True
+        if type(direction) is int:
+        	direction = abs(direction)
 
+        	if direction <= 360:
+        		self.robot.turnBy(direction)
+        	if direction > 360:
+        		print("Direction integer out of bounds. 0-360 only.")
+
+    	check(retVal)
         return retVal
+
 
     # Uses the Fluke's camera to snap a picture. 
     # Parameter 'size' defines the resolution of the photo. Defaults to 'small', 'large' is also an option.
     def takePic(self, size="small"):
     	retVal = False
 
-    	self.robot.setPicSize(size) # Defines large or small picture. Small is orders of magnitude faster.
-    	try:
-    		picture = takePicture("jpeg-fast") 
-    		retVal = picture
+    	self.robot.setPicSize(size)
+    	retVal = self.robot.takePicture("jpeg-fast")
 
-    	except Exception as e:
-    		print("Failed to take picture. Caught: {}".format(e))
-
+    	check(retVal)
     	return retVal
+
 
 
     def getAvgObstacle(self):
