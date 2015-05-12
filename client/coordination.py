@@ -5,10 +5,10 @@ class Coordination:
 		self.communicator = communicator
 		self.UID = UID
 	
-		def updateCoords(self):
+	def updateCoords(self):
 		x, y = self.robot.getPosition() 
 		self.communicator.send(self.communicator.send("db", "UID": { {"set": {"x":x, "y":y} } }) # Requests to set the x and y vals associated to UID in the database.
-		
+			
 	def moveForward(self, distance, move = True):
 		retVal = False
 		
