@@ -22,7 +22,7 @@ class Coordination:
 		retVal = [x, y]
 		return retVal
 
-	def turnFace(self, uniqueID):
+	def turnToFace(self, uniqueID):
 		retVal = False
 		
 		(bot1x, bot1y) = self.robot.getPosition() # Current x and y coordinates of bot1
