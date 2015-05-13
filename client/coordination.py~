@@ -51,8 +51,6 @@ class Coordinator:
 
 			retVal = turnArc
 
-			# TODO: Check to see if the angle is always clockwise.
-
 		else:
 
 			raise TypeError("Invalid parameter types. Requires two lists.")
