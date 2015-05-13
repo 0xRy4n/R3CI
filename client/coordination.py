@@ -1,40 +1,61 @@
-class Coordination:
+class Coordinator:
 
-	def __init__(self, robot, communicator, UID):
-		self.robot = robot
-		self.communicator = communicator
-		self.UID = UID
-	
-	def updateCoords(self):
-		x, y = self.robot.getPosition() 
-		self.communicator.send(self.communicator.send("db", "UID": { {"set": {"x":x, "y":y} } }) # Requests to set the x and y vals associated to UID in the database.
-			
-	def moveForward(self, distance, move = True):
+	# Function:		getForwardCoords
+	# Description:	gets change in X and Y coordinates needed to move by in order to move a robot forward by a given distance at its current angle
+	# Parameters: 	distance - type int ; desired foward distance
+	#				curAngle - type float ; angle to move forward from
+	# Returns:		two index integer list containing the needed change in x and y to move forward given distance.
+	def getFowardCoords(self, distance, curAngle):
 		retVal = False
-		
-		bot1Angle= self.robot.getAngle() * (math.pi / 180) # Current angle of bot 1 converted to degrees
-		x = distance * math.cos(bot1Angle) # X coordinate of new position
-		y = distance * math.sin(bot1Angle) # Y coordinate of new position
-		
-		if move:
-			self.robot.moveBy(x, y)
-		
-		retVal = [x, y]
-		return retVal
 
-	def turnToFace(self, uniqueID):
-		retVal = False
-		
-		(bot1x, bot1y) = self.robot.getPosition() # Current x and y coordinates of bot1
-		bot1angle = self.robot.getAngle() # Current angle of bot1
-		(bot2x, bot2y) = 
-		
-		x2 = bot2x - bot1x # Change in X
-		y2 = bot2y - bot1y # Change in Y
-		r = math.sqrt(x2 ** 2 + y2 ** 2) # Radius of turn arc
-		(x1, y1) = self.forward(r, move=False) 
-		
-		turnAngle = retVal = math.atan(y1))
-		self.robot.turnBy(turnAngle)
-		
+		if type(distance) is int and type(curAngle) is float:
+
+			angle = curAngle * (math.pi / 180)
+
+			displacementX = distance * math.cos(angle)
+			displacementY = distance * math.sin(angle)
+
+			retVal = [displacementX, displacementY]
+
+		else:
+
+			raise TypeError("Invalid parameter types. Requires and an int and a float.")
+
 		return(retVal)
+
+
+	# Function:		getAngleToCoords
+	# Description:	gets the angle needed to turn a robot in curPosition to face the coordinates of targPosition
+	# Parameters:	curPosition - type list ; a list with 2 indexes- the current x and y coordinates of the robot whom is turning
+	#				targPosition - type list; a list with 2 indexes- the x and y coordinates of the target position to turn to
+	# Returns:		float containing the needed turn angle
+	def getAngleToCoords(self, curPosition, targPosition):
+		retVal = False
+
+		if type(curPosition) is list and type(targPosition) is list:
+
+			x_1, y_1 = curPosition
+			x_2, y_2 = targPosition
+
+			# Sets origin coordinate to zero
+			x_2 = x_2 - x_1
+			y_2 = y_2 - y_1
+
+			radius = math.sqrt(y_2 ** 2 + x_2 ** 2) # Pythagorean Thereom, a^2 + b^2 = c^2 | Radius = c, y_2 = a, x_2 = b
+			degAngle = angle * (math.pi / 180)
+
+			x_1 = radius * math.cos(degAngle)
+			y_1 = radius * math.sin(degAngle)
+
+			turnArc = math.atan( (y_1 - y_2) / (x_2 - x_1) ) * (180 / math.pi)
+
+			retVal = turnArc
+
+		else:
+
+			raise TypeError("Invalid parameter types. Requires two lists.")
+
+		return(retVal)
+
+
+
