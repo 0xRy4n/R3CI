@@ -20,9 +20,7 @@ class Database():
 
 	def gete(self, ID, key):
 		rv = None
-		
 		rv = self._get_key(ID, key)
-
 		return rv
 	
 	def setm(self, ID, keyvals):
@@ -75,9 +73,9 @@ def handle(req, database):
 	rv = {}
 	for UID in req:
 		if "set" in req[UID]:
-			print(req[UID]["set"])
 			database.setm(UID, req[UID]["set"])
 		if "get" in req[UID]:
-			rv = database.getm(UID, req[UID]["get"])
+			rv[UID] = database.getm(UID, req[UID]["get"])
+
 	return rv
 

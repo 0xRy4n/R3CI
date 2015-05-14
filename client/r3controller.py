@@ -15,11 +15,11 @@ class R3Controller:
 	def _requestCoord(self, UID):
 		retVal = False
 		# Format for a coordinate request of robot with UID
-		request = { 
-				UID :	{
-					"get" : ["x", "y"] 
-					 	}
-				  }
+		request = {}
+		request[UID] = {
+			"get" : ["x", "y"]
+		}
+
 		response = self.communicator.send("db", request)
 
 		if type(response) is dict:
@@ -28,7 +28,7 @@ class R3Controller:
 			retVal = coords
 		else:
 			# Following assumes server will return a string containing a message if an error occurs.
-			print("Request failed. Server returned the following string:\n\n{}".format(response))		
+			print("Request failed. Server returned the following string:\n\n{}".format(response))
 			# TODO: Add error handling here
 		
 		return(retVal)
@@ -36,11 +36,11 @@ class R3Controller:
 	def _requestAngle(self, UID):
 		retVal = False
 
-		request = 	{
-				UID : 	{
-					"get" : ["angle"]
-						}
-					}
+		request = {}
+		request[UID] = {
+			"get" : ["angle"]
+		}
+
 		response = self.communicator.send("db", request)
 
 		if type(response) is dict:

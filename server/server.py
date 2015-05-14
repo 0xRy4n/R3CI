@@ -76,12 +76,12 @@ class R3CIRequestHandler(SocketServer.BaseRequestHandler):
 			self.req["bod"], self.server.db
 		)
 
-		if response != None:
+		if type(response) is dict:
 			self.res["success"] = True
 			self.res["bod"]     = response
 		else:
 			self.res["success"] = False
-			self.res["bod"]     = None
+			self.res["bod"]     = response
 		
 		self.res_data = json.dumps(self.res)
 		self.logger.debug('response(%s)', self.res_data)
