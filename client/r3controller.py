@@ -33,28 +33,9 @@ class R3Controller:
 		
 		return(retVal)
 
-	def _requestAngle(self, UID):
-		retVal = False
-
-		request = 	{
-				UID : 	{
-					"get" : ["angle"]
-						}
-					}
-		response = self.communicator.send("db", request)
-
-		if type(response) is dict:
-			# TODO: Properly get angle from dict
-			angle = response["get"]
-			retVal = angle
-		else: 
-			print("Request failed. Server returned the following string:\n\n{}".format(response))
-
-		return(retVal)
-
-
 	# Public Functions #
-	def getAngleToRobot(self, targetUID):
+
+	def getAngleToRobot(self, curAngle, targetUID):
 		retVal = False
 
 		curCoords = self._requestCoord(self.uniqueID)
@@ -68,11 +49,11 @@ class R3Controller:
 		return(retVal)
 
 
-	def getForwardCoords(self, distance):
+	def getForwardCoords(self, curAngle, distance):
 		retVal = False
 
 		curAngle = self._requestAngle(self.uniqueID)
-		forwardCoords = coordinator.calcForwardCoords(distance, curAngle)
+		forwardCoords = coordinator.calcForwardCoorSds(distance, curAngle)
 
 		if forwardCoords != False:
 			retVal = forwardCoords

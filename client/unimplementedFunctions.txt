@@ -1,0 +1,27 @@
+Unimplemented Code Storage
+==========================
+These functions may or may not be implemented/reimplemented in the future.
+--------------------------------------------------------------------------
+
+Location: r3controller.py
+Purpose:  requests an angle of a robot with UID from the database
+###################################################################
+def _requestAngle(self, UID):
+	retVal = False
+
+	request = 	{
+			UID : 	{
+				"get" : ["angle"]
+					}
+				}
+	response = self.communicator.send("db", request)
+
+	if type(response) is dict:
+		# TODO: Properly get angle from dict
+		angle = response["get"]
+		retVal = angle
+	else: 
+		print("Request failed. Server returned the following string:\n\n{}".format(response))
+
+	return(retVal)
+####################################################################

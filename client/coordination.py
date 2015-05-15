@@ -21,7 +21,7 @@ class Coordinator:
 			raise TypeError("Invalid parameter types. Requires and an int and a float.")
 
 		return(retVal)
-
+		
 
 	# Function:		calcAngleToCoords
 	# Description:	calculates the angle needed to turn a robot in curPosition to face the coordinates of targPosition

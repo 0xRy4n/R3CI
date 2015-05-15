@@ -8,7 +8,3 @@ class ScribBot:
 		angle = self.robot.getAngle()
 		self.controller.getForwardCoords(angle, distance)
 		
-	def turnToFace(self, UID):
-		curAngle = self.robot.getAngle()
-		turnAngle = self.controller.getAngleToRobot(UID)
-		self.robot.turnBy(turnAngle)
