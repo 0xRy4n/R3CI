@@ -1,0 +1,6 @@
+R3CI - Robot Communication, Coordination, Collision and Identification
+
+R3CI is an attempt at developing a system for Parallax Scribbler 2 robots to
+communicate, perform complex coordination as a group, accurately identify
+other robots, and differentiate collisions between robots, along with avoiding
+other obstacles such as walls.
