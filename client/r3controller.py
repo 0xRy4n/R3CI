@@ -1,3 +1,22 @@
+"""
+    This file is part of R3CI.
+
+    Copyright (C) R3CI Team :: All Rights Reserved
+
+    Foobar is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Foobar is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import coordination, communication, collision
 
 class R3Controller:
@@ -33,8 +52,6 @@ class R3Controller:
 		
 		return(retVal)
 
-<<<<<<< HEAD
-=======
 	def _requestAngle(self, UID):
 		retVal = False
 
@@ -54,8 +71,6 @@ class R3Controller:
 
 		return(retVal)
 
-
->>>>>>> d6354f9e9041884a3eb3ce46cf56af78becd381e
 	# Public Functions #
 
 	def getAngleToRobot(self, curAngle, targetUID):

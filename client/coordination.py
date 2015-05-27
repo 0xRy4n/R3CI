@@ -1,12 +1,36 @@
+"""
+    This file is part of R3CI.
+
+    Copyright (C) R3CI Team :: All Rights Reserved
+
+    Foobar is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Foobar is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import math
 
 class Coordinator:
 
-	# Function:		calcForwardCoords
-	# Description:	calculates change in X and Y coordinates needed to move by in order to move a robot forward by a given distance at its current angle
-	# Parameters: 	distance - type int ; desired foward distance
-	#				curAngle - type float ; angle to move forward from
-	# Returns:		two index integer list containing the needed change in x and y to move forward given distance.
+	# Function:    calcForwardCoords
+	#
+	# Description: calculates change in X and Y coordinates needed to move by in order to
+	#              move a robot forward by a given distance at its current angle
+	#
+	# Parameters:  distance - type int ; desired foward distance
+	#              curAngle - type float ; angle to move forward from
+	#
+	# Returns:     two index integer list containing the needed change in x and y to move 
+	#              forward given distance.
 	def calcForwardCoords(self, distance, curAngle):
 		retVal = False
 
@@ -23,11 +47,17 @@ class Coordinator:
 		return(retVal)
 		
 
-	# Function:		calcAngleToCoords
-	# Description:	calculates the angle needed to turn a robot in curPosition to face the coordinates of targPosition
-	# Parameters:	curPosition - type list ; a list with 2 indexes- the current x and y coordinates of the robot whom is turning
-	#				targPosition - type list; a list with 2 indexes- the x and y coordinates of the target position to turn to
-	# Returns:		float containing the needed turn angle
+	# Function:     calcAngleToCoords
+	#
+	# Description:  calculates the angle needed to turn a robot in curPosition to face 
+	#               the coordinates of targPosition
+	#
+	# Parameters:   curPosition - type list ; a list with 2 indexes- the current x and y
+	#               coordinates of the robot whom is turning
+	#               targPosition - type list; a list with 2 indexes- the x and y
+	#               coordinates of the target position to turn to
+	#
+	# Returns:      float containing the needed turn angle
 	def calcAngleToCoords(self, curAngle, curPosition, targPosition):
 		retVal = False
 
@@ -38,7 +68,8 @@ class Coordinator:
 			x_2 = x_2 - x_1
 			y_2 = y_2 - y_1
 
-			radius = math.sqrt(y_2 ** 2 + x_2 ** 2) # Pythagorean Thereom, a^2 + b^2 = c^2 | Radius = c, y_2 = a, x_2 = b
+			radius = math.sqrt(y_2 ** 2 + x_2 ** 2) 
+			# Pythagorean Thereom, a^2 + b^2 = c^2 | Radius = c, y_2 = a, x_2 = b
 			angle = curAngle * (math.pi / 180)
 
 			x_1 = radius * math.cos(angle)
@@ -52,6 +83,4 @@ class Coordinator:
 			raise TypeError("Invalid parameter types. Requires two lists.")
 
 		return(retVal)
-
-
 
