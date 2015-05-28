@@ -23,11 +23,11 @@ class R3Controller:
 
 	# Object Instantiation #
 	coordinator = coordination.Coordinator()
-	communicator = communication.Communicator()
+	communicator = communication.Client()
 	collision = collision.Collider()
 
-	def __init__(uniqueID):
-		self.uniqueID = uniqueID
+	def __init__():
+		self.uniqueID = self.communicator.uid
 
 	# Private Functions #
 
@@ -43,7 +43,7 @@ class R3Controller:
 
 		if type(response) is dict:
 			# TODO: Properly get x y values in a list from dict
-			coords = response["get"]
+			coords = response["get"][UID]
 			retVal = coords
 		else:
 			# Following assumes server will return a string containing a message if an error occurs.
@@ -64,7 +64,7 @@ class R3Controller:
 
 		if type(response) is dict:
 			# TODO: Properly get angle from dict
-			angle = response["get"]
+			angle = response["get"][UID]
 			retVal = angle
 		else: 
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
@@ -90,12 +90,10 @@ class R3Controller:
 	def getForwardCoords(self, curAngle, distance):
 		retVal = False
 
-		curAngle = self._requestAngle(self.uniqueID)
 		forwardCoords = coordinator.calcForwardCoorSds(distance, curAngle)
 
 		if forwardCoords != False:
 			retVal = forwardCoords
 
 		return(retVal)
-
 

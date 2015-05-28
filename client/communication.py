@@ -19,6 +19,7 @@
 
 import socket,json
 from time import sleep
+
 class Sock():
 	def __init__(self, server_address):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,6 +31,7 @@ class Sock():
 
 	def __del__(self):
 		self.sock.close()
+
 """
 ''' The Client() class handles communications between the server
 ''' along with implementing the R3CI communications protocol
