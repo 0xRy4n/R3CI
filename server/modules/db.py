@@ -20,9 +20,8 @@
 import uuid
 
 BaseTemplate = {
-	"x":0,
-	"y":0,
-	"ID":""
+	"loc":[0,0],
+	"classifier":""
 }
 
 class Database():

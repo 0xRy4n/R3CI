@@ -38,9 +38,9 @@ class Sock():
 """
 class Client():
 	# Registers client on server and gives client a UID
-	def __init__(self, name, host="localhost", port=9998):
+	def __init__(self, classifier, host="localhost", port=9998):
 		self.server_address = (host, port)
-		self.uid = self.send("reg", {"ID":name})["bod"]["UID"]
+		self.uid = self.send("reg", {"classifier":classifier})["bod"]["UID"]
 
 	# Send packet to server -> returns response if succeeds, None if fail
 	def send(self, typ, data):
@@ -60,6 +60,7 @@ class Client():
 	def form_packet(self, typ, data):
 		new = {}
 		new["req"] = typ
+		new["ID"]  = self.uid
 		new["bod"] = data
 		return json.dumps(new)
 
