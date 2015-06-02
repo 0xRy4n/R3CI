@@ -32,7 +32,10 @@ class Database():
 	def newe(self, ID):
 		UID = self._new_id(ID)
 		return UID
-	
+
+	def dele(self, ID):
+		self._delete(ID)
+
 	def sete(self, ID, key, value):
 		self._set_key(ID, key, value)
 
@@ -57,7 +60,7 @@ class Database():
 
 	def _new_id(self, ID):
 		new = self.template
-		new["ID"] = ID
+		new["classifier"] = ID
 		uuid_str = str( uuid.uuid1() )
 		self.database[uuid_str] = new
 		return uuid_str
@@ -74,6 +77,9 @@ class Database():
 	def _set_key(self, ID, key, value):
 		self.database[ID][key] = value
 		return self.database[ID][key]
+	
+	def _delete(self, ID):
+		del self.database[ID]
 
 """
 ''' Handles requests from the server
@@ -87,13 +93,16 @@ class Database():
 '''            ]
 ''' }
 """
-def handle(req, database):
+def handle(sender, req, database, logger):
 	rv = {}
 	for UID in req:
 		if "set" in req[UID]:
 			database.setm(UID, req[UID]["set"])
 		if "get" in req[UID]:
-			rv[UID] = database.getm(UID, req[UID]["get"])
+			try:
+				rv[UID] = database.getm(UID, req[UID]["get"])
+			except:
+				logger.warning("Key Error: {} does not exist")
 
 	return rv
 

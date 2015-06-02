@@ -37,10 +37,19 @@ class Sock():
 ''' along with implementing the R3CI communications protocol
 """
 class Client():
+	# Set UID to nothing, inital request is anonymous
+	uid = ""
+
 	# Registers client on server and gives client a UID
-	def __init__(self, classifier, host="localhost", port=9998):
+	# Pass classifer as False to disable OCV for particular client
+	def __init__(self, classifier=False, host="localhost", port=9998):
 		self.server_address = (host, port)
-		self.uid = self.send("reg", {"classifier":classifier})["bod"]["UID"]
+		init = self.send("reg", {"classifier":classifier})
+		
+		if type(init) is dict:
+			self.uid = init["UID"]
+		else:
+			self.uid = False
 
 	# Send packet to server -> returns response if succeeds, None if fail
 	def send(self, typ, data):
@@ -52,7 +61,14 @@ class Client():
 		rv = {}
 		try:
 			rv = json.loads(response)
+
+			if not rv["success"]:
+				print("Request failed...\n{}\n".format(rv["bod"]))
+
+			rv = rv["bod"]
+
 		except:
+			print("Cannot parse JSON...\n{}\n".format(response))
 			rv = None
 
 		return rv
@@ -63,19 +79,27 @@ class Client():
 		new["ID"]  = self.uid
 		new["bod"] = data
 		return json.dumps(new)
+	
+	def __del__(self):
+		if self.uid:
+			self.send("del", "")
 
 # A quick test to see if the client/server are working nicely
 if __name__ == "__main__":
-	c = Client("potato")
-	req = {}
-	req[c.uid] = {"set":{"a":"b"}}
-	res = c.send("db", req)
-	if res == None: print("Fail")
-	req = {}
-	req[c.uid] = {"get":["a","ID"]}
-	res = c.send("db", req)
-	if res == None: print("Fail")
-	print(res)
-	
+	# Initalize the client
+	c = Client(classifier="testing")
+	if c.uid:
+		#Test the db
+		req = {}
+		req[c.uid] = {"set":{"a":"b"}}
+		res = c.send("db", req)
+		if type(res) != dict: print("Fail")
+		req = {}
+		req[c.uid] = {"get":["a"]}
+		res = c.send("db", req)
+		if res == None: print("Fail")
+		print(res)
+
+	# Test if client is deleted
 	del c
 
