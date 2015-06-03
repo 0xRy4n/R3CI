@@ -1,3 +1,18 @@
+"""
+    This file is part of R3CI.
+    Copyright (C) R3CI Team :: All Rights Reserved
+    R3CI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    R3CI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import math
 
 class Coordinator:
@@ -26,7 +41,7 @@ class Coordinator:
 	# Function:		calcAngleToCoords
 	# Description:	calculates the angle needed to turn a robot in curPosition to face the coordinates of targPosition
 	# Parameters:	curPosition - type list ; a list with 2 indexes- the current x and y coordinates of the robot whom is turning
-	#				targPosition - type list; a list with 2 indexes- the x and y coordinates of the target position to turn to
+	#				targPosition - type list; a list wit.h 2 indexes- the x and y coordinates of the target position to turn to
 	# Returns:		float containing the needed turn angle
 	def calcAngleToCoords(self, curAngle, curPosition, targPosition):
 		retVal = False
