@@ -145,7 +145,7 @@ def main():
                     )
 
 	db = modules.db.Database()
-	host, port = "localhost", int(options.port)
+	host, port = '', int(options.port)
 
 	server = R3CIServer((host,port), R3CIRequestHandler, db, EnableCV=OCV)
 	rhost, rport = server.server_address
