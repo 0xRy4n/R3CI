@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
     This file is part of R3CI.
     Copyright (C) R3CI Team :: All Rights Reserved
@@ -19,12 +20,25 @@ class ScribBot:
 		self._robot = myro.makeRobot(name, com)
 		self._controller = R3Controller.R3Controller()
 		self._robot.setPosition(offset[0], offset[1])
+=======
+import Myro as myro
+import r3controller
+
+class ScribBot:
+
+	def __init__(self, name, com, server):
+		self.name = name
+		self.server = server
+		self.robot = myro.makeRobot("Scribbler", com)
+		self.controller = r3controller.R3Controller(self.name, self.server)
+>>>>>>> 23d93bb673acd6a7ee79449ee1602306ed51a6e1
 
 	def forward(self, distance):
 		angle = self._robot.getAngle()
 		self._controller.getForwardCoords(angle, distance)
 		
 	def turnToFace(self, UID):
+<<<<<<< HEAD
 		curAngle = self._robot.getAngle()
 		turnAngle = self._controller.getAngleToRobot(UID)
 		self._robot.turnBy(turnAngle)
@@ -37,3 +51,9 @@ class ScribBot:
 		return(retVal)
 
 	
+=======
+		curAngle = self.robot.getAngle()
+		turnAngle = self.controller.getAngleToRobot(UID)
+		self.robot.turnBy(turnAngle)
+
+>>>>>>> 23d93bb673acd6a7ee79449ee1602306ed51a6e1

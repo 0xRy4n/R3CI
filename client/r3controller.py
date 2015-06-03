@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """
     This file is part of R3CI.
     Copyright (C) R3CI Team :: All Rights Reserved
@@ -14,6 +15,8 @@
 """
 
 
+=======
+>>>>>>> 23d93bb673acd6a7ee79449ee1602306ed51a6e1
 import coordination, communication
 
 class R3Controller:
@@ -64,6 +67,11 @@ class R3Controller:
 
 		return(retVal)
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 23d93bb673acd6a7ee79449ee1602306ed51a6e1
 	# Public Functions #
 
 	def setAngle(angle):

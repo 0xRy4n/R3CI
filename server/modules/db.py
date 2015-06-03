@@ -1,9 +1,27 @@
+"""
+    This file is part of R3CI.
+
+    Copyright (C) R3CI Team :: All Rights Reserved
+
+    R3CI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    R3CI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import uuid
 
 BaseTemplate = {
-	"x":0,
-	"y":0,
-	"ID":""
+	"loc":[0,0],
+	"classifier":""
 }
 
 class Database():
@@ -14,7 +32,10 @@ class Database():
 	def newe(self, ID):
 		UID = self._new_id(ID)
 		return UID
-	
+
+	def dele(self, ID):
+		self._delete(ID)
+
 	def sete(self, ID, key, value):
 		self._set_key(ID, key, value)
 
@@ -39,7 +60,7 @@ class Database():
 
 	def _new_id(self, ID):
 		new = self.template
-		new["ID"] = ID
+		new["classifier"] = ID
 		uuid_str = str( uuid.uuid1() )
 		self.database[uuid_str] = new
 		return uuid_str
@@ -56,6 +77,9 @@ class Database():
 	def _set_key(self, ID, key, value):
 		self.database[ID][key] = value
 		return self.database[ID][key]
+	
+	def _delete(self, ID):
+		del self.database[ID]
 
 """
 ''' Handles requests from the server
@@ -69,13 +93,16 @@ class Database():
 '''            ]
 ''' }
 """
-def handle(req, database):
+def handle(sender, req, database, logger):
 	rv = {}
 	for UID in req:
 		if "set" in req[UID]:
 			database.setm(UID, req[UID]["set"])
 		if "get" in req[UID]:
-			rv[UID] = database.getm(UID, req[UID]["get"])
+			try:
+				rv[UID] = database.getm(UID, req[UID]["get"])
+			except:
+				logger.warning("Key Error: {} does not exist")
 
 	return rv
 

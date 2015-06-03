@@ -1,5 +1,25 @@
+"""
+    This file is part of R3CI.
+
+    Copyright (C) R3CI Team :: All Rights Reserved
+
+    R3CI is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    R3CI is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import socket,json
 from time import sleep
+
 class Sock():
 	def __init__(self, server_address):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -11,15 +31,25 @@ class Sock():
 
 	def __del__(self):
 		self.sock.close()
+
 """
 ''' The Client() class handles communications between the server
 ''' along with implementing the R3CI communications protocol
 """
 class Client():
+	# Set UID to nothing, inital request is anonymous
+	uid = ""
+
 	# Registers client on server and gives client a UID
-	def __init__(self, name, host="localhost", port=9998):
+	# Pass classifer as False to disable OCV for particular client
+	def __init__(self, classifier=False, host="localhost", port=9998):
 		self.server_address = (host, port)
-		self.uid = self.send("reg", {"ID":name})["bod"]["UID"]
+		init = self.send("reg", {"classifier":classifier})
+		
+		if type(init) is dict:
+			self.uid = init["UID"]
+		else:
+			self.uid = False
 
 	# Send packet to server -> returns response if succeeds, None if fail
 	def send(self, typ, data):
@@ -31,7 +61,14 @@ class Client():
 		rv = {}
 		try:
 			rv = json.loads(response)
+
+			if not rv["success"]:
+				print("Request failed...\n{}\n".format(rv["bod"]))
+
+			rv = rv["bod"]
+
 		except:
+			print("Cannot parse JSON...\n{}\n".format(response))
 			rv = None
 
 		return rv
@@ -39,21 +76,30 @@ class Client():
 	def form_packet(self, typ, data):
 		new = {}
 		new["req"] = typ
+		new["ID"]  = self.uid
 		new["bod"] = data
 		return json.dumps(new)
+	
+	def __del__(self):
+		if self.uid:
+			self.send("del", "")
 
 # A quick test to see if the client/server are working nicely
 if __name__ == "__main__":
-	c = Client("potato")
-	req = {}
-	req[c.uid] = {"set":{"a":"b"}}
-	res = c.send("db", req)
-	if res == None: print("Fail")
-	req = {}
-	req[c.uid] = {"get":["a","ID"]}
-	res = c.send("db", req)
-	if res == None: print("Fail")
-	print(res)
-	
+	# Initalize the client
+	c = Client(classifier="testing")
+	if c.uid:
+		#Test the db
+		req = {}
+		req[c.uid] = {"set":{"a":"b"}}
+		res = c.send("db", req)
+		if type(res) != dict: print("Fail")
+		req = {}
+		req[c.uid] = {"get":["a"]}
+		res = c.send("db", req)
+		if res == None: print("Fail")
+		print(res)
+
+	# Test if client is deleted
 	del c
 
