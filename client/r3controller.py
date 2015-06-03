@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 """
     This file is part of R3CI.
     Copyright (C) R3CI Team :: All Rights Reserved
