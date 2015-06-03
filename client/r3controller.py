@@ -14,9 +14,6 @@
     along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-
-=======
->>>>>>> 23d93bb673acd6a7ee79449ee1602306ed51a6e1
 import coordination, communication
 
 class R3Controller:
@@ -67,11 +64,7 @@ class R3Controller:
 
 		return(retVal)
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 23d93bb673acd6a7ee79449ee1602306ed51a6e1
 	# Public Functions #
 
 	def setAngle(angle):
@@ -79,7 +72,6 @@ class R3Controller:
 		request[UID] = {
 			"set" : ["angle"]
 		}
-
 
 
 	def getAngleToRobot(self, curAngle, targetUID):
