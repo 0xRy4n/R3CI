@@ -15,11 +15,13 @@
     along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import Myro, r3controller
+
 class ScribBot:
 
 	def __init__(name, com, offset):
-		self._robot = myro.makeRobot(name, com)
-		self._controller = R3Controller.R3Controller()
+		self._robot = Myro.makeRobot(name, com)
+		self._controller = r3controller.R3Controller()
 		self._robot.setPosition(offset[0], offset[1])
 
 	def forward(self, distance):
