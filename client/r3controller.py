@@ -1,4 +1,3 @@
-
 """
     This file is part of R3CI.
     Copyright (C) R3CI Team :: All Rights Reserved
@@ -13,6 +12,7 @@
     You should have received a copy of the GNU General Public License
     along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
 """
+
 
 import coordination, communication
 
@@ -64,7 +64,6 @@ class R3Controller:
 
 		return(retVal)
 
-
 	# Public Functions #
 
 	def setAngle(angle):
@@ -72,6 +71,7 @@ class R3Controller:
 		request[UID] = {
 			"set" : ["angle"]
 		}
+
 
 
 	def getAngleToRobot(self, curAngle, targetUID):
