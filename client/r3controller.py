@@ -72,8 +72,6 @@ class R3Controller:
 			"set" : ["angle"]
 		}
 
-
-
 	def getAngleToRobot(self, curAngle, targetUID):
 		retVal = False
 
