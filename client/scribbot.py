@@ -1,3 +1,4 @@
+# -*- encoding:utf-8 -*-
 """
     This file is part of R3CI.
     
@@ -15,40 +16,64 @@
     along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import Myro, r3controller, random
+import Myro, Graphics, r3controller, random, time, threading
 
 class ScribBot:
 
-	def __init__(name, com, offset):
-		self._robot = Myro.makeRobot(name, com)
-		self._controller = r3controller.R3Controller()
+	def __init__(self, name, com, offset, sim=False):
+		if not sim:
+			self._robot = Myro.makeRobot("Scribbler", com)
+		else:
+			self._sim = Myro.Simulation("Simulation", 600, 600, Graphics.Color("lightgrey"))
+			# Add lights first:
+			self._sim.addLight((200, 200), 25, Graphics.Color("orange"))
+			# Add walls and other objects:
+			self._sim.addWall((10, 10), (20, 20), Graphics.Color("black"))
+			self._sim.addWall((100, 100), (120, 120))
+			# Is movable:
+			circle = Graphics.Circle((100, 200), 20)
+			self._sim.setup()
+			self._robot = Myro.makeRobot("SimScribbler", self._sim)
+
+		self._controller = r3controller.R3Controller(name, "192.168.1.119")
 		self._robot.setPosition(offset[0], offset[1])
+		self.name = name
+		self._robot.setName(name)
+
+		self._robot.setIRPower(120)
+		t = threading.Thread(target=self.checkStall, args=())
+		t.daemon = True
+		t.start()
+
 
 	def forward(self, distance):
 		angle = self._robot.getAngle()
 		(x, y) = self._controller.getForwardCoords(angle, distance)
-		self._robot.doTogether([self._robot.moveBy, x, y], [checkStall])
-		self._controller.setCoords(self._robot.getPosition())
+		print(x,y)
+		Myro.doTogether([self._robot.moveBy, x, y], [self._controller.setCoords, self.getPosition()])
 
 
 	def backward(self, distance):
 		angle = self._robot.getAngle()
 		(x, y) = self._controller.getForwardCoords(angle, distance)
-		self._robot.doTogether(self._robot.moveBy(0-x, 0-y), checkStall())
+		Myro.doTogether([self._robot.moveBy, 0-x, 0-y], [self._controller.setCoords, self.getPosition()])
+
 
 	def turnToFace(self, UID):
 		curAngle = self._robot.getAngle()
 		turnAngle = self._controller.getAngleToRobot(UID)
-		self._robot.turnBy(turnAngle)
+		self.turn(turnAngle)
 
 	def turn(self, degree):
 		self._robot.turnBy(degree)
+		curAngle = self._robot.getAngle()
+		self._controller.setAngle(curAngle)
 
 	def turnLeft(self):
-		self._robot.turnBy(270)
+		self.turn(270)
 
 	def turnRight(self):
-		self._robot.turnBy(90)
+		self.turn(90)
 
 	def speak(self, words):
 		self._robot.speak(words)
@@ -61,12 +86,16 @@ class ScribBot:
 		return(retVal)
 
 	def checkStall(self):
-		stalled = self._robot.getStall()
-		if stalled:
-			self._robot.stop()
-			self.backward(100)
-			self.turn(180)	
-			
+		while True:
+			stalled = self._robot.getStall()
+			left = self._robot.getObstacle(0)
+			middle = self._robot.getObstacle(1)
+			right = self._robot.getObstacle(2)
+
+			if stalled or left > 6300 or middle > 6300 or right > 6300:
+				self._robot.stop()
+				self.backward(100)
+				
 	def roam(self):
 		turnVal = random.randint(1,360)
 		moveVal = random.randint(50, 300)
@@ -75,7 +104,3 @@ class ScribBot:
 		# check for robots
 		# return robot name if found
 		# else return false
-
-
-
-

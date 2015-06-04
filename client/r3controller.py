@@ -20,11 +20,10 @@ import coordination, communication
 
 class R3Controller:
 
-	def __init__(self, name, server):
+	def __init__(self, name, server="localhost"):
 		self.coordinator = coordination.Coordinator()
-		self.communicator = communication.Client(name, server)
-		self.UID = communicator.uid
-
+		self.communicator = communication.Client(host=server)
+		self.uid = self.communicator.uid
 
 	# Private Functions #
 	def _requestCoord(self, UID):
@@ -32,7 +31,7 @@ class R3Controller:
 		# Format for a coordinate request of robot with UID
 		request = {}
 		request[UID] = {
-			"get" : ["x", "y"]
+			"get" : ["loc"]
 		}
 
 		response = self.communicator.send("db", request)
@@ -52,14 +51,14 @@ class R3Controller:
 
 		request = {}
 		request[UID] = {
-			"get" : {"angle"}
+			"get" : ["angle"]
 		}
 
 		response = self.communicator.send("db", request)
 
 		if type(response) is dict:
 			# TODO: Properly get angle from dict
-			angle = response["get"]
+			angle = response[UID]["angle"]
 			retVal = angle
 		else: 
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
@@ -70,7 +69,7 @@ class R3Controller:
 
 	def setAngle(self, angle):
 		request = {}
-		request[self.UID] = {
+		request[self.uid] = {
 			"set" : {"angle" : angle}
 		}
 
@@ -78,7 +77,7 @@ class R3Controller:
 
 	def setCoords(self, coords):
 		request = {}
-		request[self.UID] = {
+		request[self.uid] = {
 			"set" : {"loc" : [coords]}
 		}
 
@@ -101,7 +100,7 @@ class R3Controller:
 	def getForwardCoords(self, curAngle, distance):
 		retVal = False
 
-		forwardCoords = coordinator.calcForwardCoorSds(distance, curAngle)
+		forwardCoords = self.coordinator.calcForwardCoords(int(distance), float(curAngle))
 
 		if forwardCoords != False:
 			retVal = forwardCoords
