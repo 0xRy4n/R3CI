@@ -1,8 +1,8 @@
 """
     This file is part of R3CI.
-    
+
     Copyright (C) R3CI Team :: All Rights Reserved
-    
+
     R3CI is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,11 +19,11 @@ import math
 
 class Coordinator:
 
-	# Function:	calcForwardCoords
-	# Description:	calculates change in X and Y coordinates needed to move by in order to move a robot forward by a given distance at its current angle
-	# Parameters: 	distance - type int ; desired foward distance
-	#		curAngle - type float ; angle to move forward from
-	# Returns:	two index integer list containing the needed change in x and y to move forward given distance.
+	# Function:     calcForwardCoords
+	# Description:  calculates change in X and Y coordinates needed to move by in order to move a robot forward by a given distance at its current angle
+	# Parameters:   distance - type int ; desired foward distance
+	#               curAngle - type float ; angle to move forward from
+	# Returns:      two index integer list containing the needed change in x and y to move forward given distance.
 	def calcForwardCoords(self, distance, curAngle):
 		retVal = False
 
@@ -40,11 +40,11 @@ class Coordinator:
 		return(retVal)
 		
 
-	# Function:	calcAngleToCoords
-	# Description:	calculates the angle needed to turn a robot in curPosition to face the coordinates of targPosition
-	# Parameters:	curPosition - type list ; a list with 2 indexes- the current x and y coordinates of the robot whom is turning
-	#		targPosition - type list; a list wit.h 2 indexes- the x and y coordinates of the target position to turn to
-	# Returns:	float containing the needed turn angle
+	# Function:     calcAngleToCoords
+	# Description:  calculates the angle needed to turn a robot in curPosition to face the coordinates of targPosition
+	# Parameters:   curPosition - type list ; a list with 2 indexes- the current x and y coordinates of the robot whom is turning
+	#               targPosition - type list; a list wit.h 2 indexes- the x and y coordinates of the target position to turn to
+	# Returns:      float containing the needed turn angle
 	def calcAngleToCoords(self, curAngle, curPosition, targPosition):
 		retVal = False
 
@@ -70,6 +70,3 @@ class Coordinator:
 			raise TypeError("Invalid parameter types. Requires two lists.")
 
 		return(retVal)
-
-
-

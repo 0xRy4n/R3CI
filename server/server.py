@@ -21,11 +21,15 @@ import SocketServer, logging, threading, json, modules
 from optparse import OptionParser
 from time import sleep
 
+# R3CI Server instance that extends SocketServer, enables custom parameters to be passed
+# into R3CIRequestHandler. This class also provides debug log.
+# R3CIServer((host, port), RequestHandler, <modules.db instance>)
 class R3CIServer(SocketServer.TCPServer):
-	def __init__(self, server_address, RequestHandlerClass, database, EnableCV=False):
+	def __init__(self, server_address, RequestHandlerClass, database, disabled=[]):
 		self.logger = logging.getLogger("R3CIServer")
 		self.db = database
-		self.cv = EnableCV
+		self.disabled = disabled
+		self.disabled.append("db")
 		SocketServer.TCPServer.__init__(
 			self, server_address, RequestHandlerClass, bind_and_activate=True
 		)
@@ -65,9 +69,10 @@ class R3CIServer(SocketServer.TCPServer):
 		self.logger.debug("close_request(%s)", request_address)
 		return SocketServer.TCPServer.close_request(self, request_address)
 
-
+# R3CIRequestHandler class handles requests coming from R3CIServer
+# R3CIRequestHandler(request, address, server)
 class R3CIRequestHandler(SocketServer.BaseRequestHandler):
-	def __init__(self, request, address, server, CV=False):
+	def __init__(self, request, address, server):
 		self.logger = logging.getLogger("R3CIRequestHandler")
 		self.logger.debug("__init__")
 		self.req_data = ""
@@ -80,25 +85,47 @@ class R3CIRequestHandler(SocketServer.BaseRequestHandler):
 		self.logger.debug("setup")
 		return SocketServer.BaseRequestHandler.setup(self)
 
+	def iterate_modules(self):
+		for module in modules.MODULES:
+			if not module in self.server.disabled:
+				yield module
+
 	def handle(self):
 		self.logger.debug("handle")
 		self.req_data = self.request.recv(1024)
 		self.logger.debug("request(%s)", self.req_data)
 		self.req = json.loads(self.req_data)
 
-		if self.req["ID"] == "":
-			response = modules.reg.handle(
-				self.client_address, self.req["bod"], self.server.db, self.logger
-			)
-			if self.server.cv and self.req["bod"]["classifier"]:
-				if not modules.ocv.init(response["UID"], self.req["bod"]["classifier"]):
-					response = "Can't find CV Classifier"
+		# IF sender does not have unique ID, give sender one, initialize with modules
+		if self.req["ID"] == "" and self.req["req"] == "reg":
+			response = {}
+			response["UID"] = modules.db.init(
+				self.server, self.logger, self.client_address, self.req["bod"])
+
+			# MODULES initialize section.
+			for module in self.iterate_modules():
+				response.update(getattr(modules, module).init(
+					self.server, self.logger, response["UID"], self.req["bod"])
+				)
+
+		elif self.req["req"] == "del":
+			# Delete ID from all modules
+			response = {}
+			modules.db.delete(self.server, self.logger, self.req["ID"])
+			for module in self.iterate_modules():
+				getattr(modules, module).delete(
+					self.server, self.logger, self.req["ID"]
+				)
 		else:
-			response = getattr(
-				modules, self.req["req"]
-			).handle(
-				self.req["ID"], self.req["bod"], self.server.db, self.logger
-			)
+			try:
+				response = getattr(
+					modules, self.req["req"]
+				).handle(
+					self.req["ID"], self.req["bod"], self.server.db, self.logger
+				)
+			except Exception as e:
+				self.logger.error("Error {}".format(e))
+				response = "Error: {}".format(e)
 
 		if type(response) is dict:
 			self.res["success"] = True
@@ -120,9 +147,9 @@ def parsearg():
 	parser = OptionParser()
 
 	parser.add_option("-p", "--port", dest="port", default="9998",
-	                  help="Set the port", metavar="PORT")
-	parser.add_option("-o", action="store_true", default=False,
-	                  help="Enable opencv")
+	                  help="Set the port", metavar="<port>")
+	parser.add_option("--disable", dest="disable", default=False,
+	                  help="List of modules to disable", metavar="to,disable")
 	parser.add_option("-v", action="store_true", default=False,
 	                  help="Verbose logging (debug)")
 
@@ -131,11 +158,11 @@ def parsearg():
 def main():
 	options, args = parsearg()
 
-	OCV = False
 	LOGLVL = logging.INFO
 
-	if options.o:
-		OCV = True
+	disable = []
+	if options.disable:
+		disable = options.disable.split(",")
 	
 	if options.v:
 		LOGLVL = logging.DEBUG
@@ -146,8 +173,14 @@ def main():
 
 	db = modules.db.Database()
 	host, port = '', int(options.port)
+	
 
-	server = R3CIServer((host,port), R3CIRequestHandler, db, EnableCV=OCV)
+	try:
+		server = R3CIServer((host,port), R3CIRequestHandler, db, disabled=disable)
+	except:
+		print("Port in use")
+		exit(1)
+
 	rhost, rport = server.server_address
 
 	t = threading.Thread(target=server.serve_forever)
@@ -158,7 +191,7 @@ def main():
 	logger.info("Server on %s:%s", rhost, rport)
 
 	try:
-		while 1: sleep(1000)
+		while 1: sleep(10)
 	except:
 		print("\nGoodbye.\n")
 

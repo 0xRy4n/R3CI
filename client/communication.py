@@ -45,11 +45,7 @@ class Client():
 	def __init__(self, classifier=False, host="localhost", port=9998):
 		self.server_address = (host, port)
 		init = self.send("reg", {"classifier":classifier})
-		
-		if type(init) is dict:
-			self.uid = init["UID"]
-		else:
-			self.uid = False
+		self.uid = init["UID"]
 
 	# Send packet to server -> returns response if succeeds, None if fail
 	def send(self, typ, data):
@@ -87,7 +83,7 @@ class Client():
 # A quick test to see if the client/server are working nicely
 if __name__ == "__main__":
 	# Initalize the client
-	c = Client(classifier="testing")
+	c = Client(port=9998)
 	if c.uid:
 		#Test the db
 		req = {}
