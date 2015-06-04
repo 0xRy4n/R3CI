@@ -30,10 +30,10 @@ class ScribBot:
 		self._robot.doTogether(self._robot.moveBy(x,y), checkStall())
 
 	def backward(self, distance):
-		self.turn(180)
 		angle = self._robot.getAngle()
-		self._controller.getForwardCoords(angle, distance)
-		
+		(x, y) = self._controller.getForwardCoords(angle, distance)
+		self._robot.doTogether(self._robot.moveBy(0-x, 0-y), checkStall())
+
 	def turnToFace(self, UID):
 		curAngle = self._robot.getAngle()
 		turnAngle = self._controller.getAngleToRobot(UID)
@@ -61,13 +61,18 @@ class ScribBot:
 	def checkStall(self):
 		stalled = self._robot.getStall()
 		if stalled:
-			self._robot.stop()		
+			self._robot.stop()
+			self.backward(100)
+			self.turn(180)	
 
 	def roam(self):
 		turnVal = random.randint(1,360)
 		moveVal = random.randint(50, 300)
 		self.forward(moveVal)
 		self.turn(turnVal)
+		# check for robots
+		# return robot name if found
+		# else return false
 
 
 

@@ -51,17 +51,18 @@ class Coordinator:
 		if type(curPosition) is list and type(targPosition) is list:
 			x_1, y_1 = curPosition
 			x_2, y_2 = targPosition
+
 			# Sets origin coordinate to zero
 			x_2 = x_2 - x_1
 			y_2 = y_2 - y_1
 
-			radius = math.sqrt(y_2 ** 2 + x_2 ** 2) # Pythagorean Thereom, a^2 + b^2 = c^2 | Radius = c, y_2 = a, x_2 = b
 			angle = curAngle * (math.pi / 180)
+			dx = math.cos(angle)
+			dy = math.sin(angle)
 
-			x_1 = radius * math.cos(angle)
-			y_1 = radius * math.sin(angle)
-
-			turnArc = math.atan( (y_1 - y_2) / (x_2 - x_1) ) * (180 / math.pi)
+			turnArc = math.atan2(x_2 * dy - y_2 * dx,  x_2 * dx + y_2 * dy ) * (180 / math.pi)
+			if turnArc < 0:
+				turnArc += 180
 
 			retVal = turnArc
 			# TODO: Check to see if the angle is always clockwise.
