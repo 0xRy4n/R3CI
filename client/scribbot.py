@@ -15,7 +15,7 @@
     along with R3CI.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import Myro, r3controller
+import Myro, r3controller, random
 
 class ScribBot:
 
@@ -25,6 +25,12 @@ class ScribBot:
 		self._robot.setPosition(offset[0], offset[1])
 
 	def forward(self, distance):
+		angle = self._robot.getAngle()
+		(x, y) = self._controller.getForwardCoords(angle, distance)
+		self._robot.doTogether(self._robot.moveBy(x,y), checkStall())
+
+	def backward(self, distance):
+		self.turn(180)
 		angle = self._robot.getAngle()
 		self._controller.getForwardCoords(angle, distance)
 		
@@ -36,6 +42,33 @@ class ScribBot:
 	def turn(self, degree):
 		self._robot.turnBy(degree)
 
+	def turnLeft(self):
+		self._robot.turnBy(270)
+
+	def turnRight(self):
+		self._robot.turnBy(90)
+
+	def speak(self, words):
+		self._robot.speak(words)
+
+	def beep(time, frequency):
+		self._robot.beep(time, frequency)
+
 	def getPosition(self):
 		retVal = self._robot.getPosition()
 		return(retVal)
+
+	def checkStall(self):
+		stalled = self._robot.getStall()
+		if stalled:
+			self._robot.stop()		
+
+	def roam(self):
+		turnVal = random.randint(1,360)
+		moveVal = random.randint(50, 300)
+		self.forward(moveVal)
+		self.turn(turnVal)
+
+
+
+

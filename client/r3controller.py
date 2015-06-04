@@ -38,12 +38,11 @@ class R3Controller:
 
 		if type(response) is dict:
 			# TODO: Properly get x y values in a list from dict
-			coords = response["get"]
+			coords = response
 			retVal = coords
 		else:
 			# Following assumes server will return a string containing a message if an error occurs.
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
-			# TODO: Add error handling here
 		
 		return(retVal)
 
@@ -57,9 +56,8 @@ class R3Controller:
 
 		response = self.communicator.send("db", request)
 
-		if type(response) is dict:
-			# TODO: Properly get angle from dict
-			angle = response["get"]
+		if type(response) is str:
+			angle = float(response)
 			retVal = angle
 		else: 
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
@@ -73,6 +71,11 @@ class R3Controller:
 		request[UID] = {
 			"set" : ["angle"]
 		}
+
+		response = self.communicator.send("db", request)
+
+		if type(response) is not str: 
+			print("Request failed. Server returned the following string:\n\n{}".format(response))
 
 	def getAngleToRobot(self, curAngle, targetUID):
 		retVal = False
