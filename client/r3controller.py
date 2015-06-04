@@ -23,6 +23,7 @@ class R3Controller:
 	def __init__(self, name, server):
 		self.coordinator = coordination.Coordinator()
 		self.communicator = communication.Client(name, server)
+		self.UID = communicator.uid
 
 
 	# Private Functions #
@@ -38,11 +39,11 @@ class R3Controller:
 
 		if type(response) is dict:
 			# TODO: Properly get x y values in a list from dict
-			coords = response
-			retVal = coords
+			retVal = response[UID]
 		else:
 			# Following assumes server will return a string containing a message if an error occurs.
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
+			# TODO: Add error handling here
 		
 		return(retVal)
 
@@ -51,13 +52,14 @@ class R3Controller:
 
 		request = {}
 		request[UID] = {
-			"get" : ["angle"]
+			"get" : {"angle"}
 		}
 
 		response = self.communicator.send("db", request)
 
-		if type(response) is str:
-			angle = float(response)
+		if type(response) is dict:
+			# TODO: Properly get angle from dict
+			angle = response["get"]
 			retVal = angle
 		else: 
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
@@ -66,21 +68,26 @@ class R3Controller:
 
 	# Public Functions #
 
-	def setAngle(angle):
+	def setAngle(self, angle):
 		request = {}
-		request[UID] = {
-			"set" : ["angle"]
+		request[self.UID] = {
+			"set" : {"angle" : angle}
 		}
 
 		response = self.communicator.send("db", request)
 
-		if type(response) is not str: 
-			print("Request failed. Server returned the following string:\n\n{}".format(response))
+	def setCoords(self, coords):
+		request = {}
+		request[self.UID] = {
+			"set" : {"loc" : [coords]}
+		}
+
+		response = self.communicator.send("db", request)
 
 	def getAngleToRobot(self, curAngle, targetUID):
 		retVal = False
 
-		curCoords = self._requestCoord(self.communicator.uid)
+		curCoords = self._requestCoord(self.uid)
 		targCoords = self._requestCoord(targetUID)
 
 		angleToTarget = self.coordinator.getAngleToCoords(curAngle, curCoords, targCoords)
@@ -94,7 +101,6 @@ class R3Controller:
 	def getForwardCoords(self, curAngle, distance):
 		retVal = False
 
-		curAngle = self._requestAngle(self.communicator.uid)
 		forwardCoords = coordinator.calcForwardCoorSds(distance, curAngle)
 
 		if forwardCoords != False:

@@ -27,7 +27,9 @@ class ScribBot:
 	def forward(self, distance):
 		angle = self._robot.getAngle()
 		(x, y) = self._controller.getForwardCoords(angle, distance)
-		self._robot.doTogether(self._robot.moveBy(x,y), checkStall())
+		self._robot.doTogether([self._robot.moveBy, x, y], [checkStall])
+		self._controller.setCoords(self._robot.getPosition())
+
 
 	def backward(self, distance):
 		angle = self._robot.getAngle()
