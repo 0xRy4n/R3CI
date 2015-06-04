@@ -20,6 +20,7 @@
 import uuid
 
 BaseTemplate = {
+	"angle":0,
 	"loc":[0,0],
 	"classifier":""
 }
