@@ -27,6 +27,10 @@ class R3Controller:
 
 
 	# Private Functions #
+	def _requestFront(self):
+		response = self.communicator.send("front", "")
+		return response
+
 	def _requestCoord(self, UID):
 		retVal = False
 		# Format for a coordinate request of robot with UID

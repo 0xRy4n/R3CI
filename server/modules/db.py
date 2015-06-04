@@ -30,8 +30,8 @@ class Database():
 		self.template = template
 		self.database = self._new_db()
 
-	def newe(self, ID):
-		UID = self._new_id(ID)
+	def newe(self):
+		UID = self._new_id()
 		return UID
 
 	def dele(self, ID):
@@ -59,9 +59,8 @@ class Database():
 	def _new_db(self):
 		return {}
 
-	def _new_id(self, ID):
+	def _new_id(self):
 		new = self.template
-		new["classifier"] = ID
 		uuid_str = str( uuid.uuid1() )
 		self.database[uuid_str] = new
 		return uuid_str
@@ -82,16 +81,34 @@ class Database():
 	def _delete(self, ID):
 		del self.database[ID]
 
+def init(server, logger, sender, req):
+
+	rv = server.db.newe()
+	logger.info("{} registered as {}".format(sender, rv))
+	return rv
+
+def delete(server, logger, sender):
+	server.db.dele(sender)
+	logger.info(sender + " removed")
+
 """
-''' Handles requests from the server
-'''
+''' Requires "set" or "get" or both:
 ''' {
+''' "<uid of robot>": {
 '''     "set": {
 '''         "<key>":"<value>"
-'''            }
+'''            },
+'''
 '''     "get": [
 '''         "<key>"
 '''            ]
+''' }
+'''
+''' Returns what is fetched if "get"::
+''' {
+'''     "<uid of robot>": {
+'''         "<key>" : "<value>"
+'''     }
 ''' }
 """
 def handle(sender, req, database, logger):
@@ -100,10 +117,7 @@ def handle(sender, req, database, logger):
 		if "set" in req[UID]:
 			database.setm(UID, req[UID]["set"])
 		if "get" in req[UID]:
-			try:
-				rv[UID] = database.getm(UID, req[UID]["get"])
-			except:
-				logger.warning("Key Error: {} does not exist")
+			rv[UID] = database.getm(UID, req[UID]["get"])
 
 	return rv
 
