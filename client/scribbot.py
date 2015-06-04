@@ -64,7 +64,7 @@ class ScribBot:
 			self._robot.stop()
 			self.backward(100)
 			self.turn(180)	
-
+			
 	def roam(self):
 		turnVal = random.randint(1,360)
 		moveVal = random.randint(50, 300)
