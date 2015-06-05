@@ -89,8 +89,9 @@ class ScribBot:
 	while True:
 	    stalled = self._robot.getStall()
 	    dist = self._robot.getDistance()
+	    print(dist)
 	    try:
-		if stalled or dist[0] < 10:
+		if stalled or (dist[0] + dist[1]) < 22 or 0 is in dist:
 		    self._robot.stop()
 		    self.backward(100)
 	    except:
