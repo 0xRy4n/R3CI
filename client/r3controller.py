@@ -23,7 +23,7 @@ class R3Controller:
 	def __init__(self, name, server="localhost"):
 		self.coordinator = coordination.Coordinator()
 		self.communicator = communication.Client(name, server)
-		self.UID = communicator.uid
+		self.UID = self.communicator.uid
 		self.communicator.send("db", {self.UID: {"set":{"name":name}}})
 
 	# Private Functions #
