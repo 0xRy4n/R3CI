@@ -40,5 +40,6 @@ def handle(sender, req, database, logger):
 			   (closest[1] > y or closest[1] == None):
 				closest[0] = x
 				closest[1] = y
+				UID = ID
 
-	return robots
+	return UID
