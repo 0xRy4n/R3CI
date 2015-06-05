@@ -89,12 +89,12 @@ class ScribBot:
 		while True:
 			stalled = self._robot.getStall()
 			dist = self._robot.getDistance()
-            try:
+		try:
     			if stalled or dist[1] < 15:
     				self._robot.stop()
     				self.backward(100)
-            except:
-                pass
+    		except:
+			pass
 				
 	def roam(self):
 		turnVal = random.randint(1,360)
