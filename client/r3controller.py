@@ -23,15 +23,15 @@ class R3Controller:
 	def __init__(self, name, server="localhost"):
 		self.coordinator = coordination.Coordinator()
 		self.communicator = communication.Client(name, server)
-		self.UID = self.communicator.uid
-		self.communicator.send("db", {self.UID: {"set":{"name":name}}})
+		self.uid = self.communicator.uid
+		self.communicator.send("db", {self.uid: {"set":{"name":name}}})
 
 	# Private Functions #
-	def _requestCoord(self, UID):
+	def _requestCoord(self, uid):
 		retVal = False
-		# Format for a coordinate request of robot with UID
+		# Format for a coordinate request of robot with uid
 		request = {}
-		request[UID] = {
+		request[uid] = {
 			"get" : ["loc"]
 		}
 
@@ -39,7 +39,7 @@ class R3Controller:
 
 		if type(response) is dict:
 			# TODO: Properly get x y values in a list from dict
-			retVal = response[UID]
+			retVal = response[uid]
 		else:
 			# Following assumes server will return a string containing a message if an error occurs.
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
@@ -47,11 +47,11 @@ class R3Controller:
 		
 		return(retVal)
 
-	def _requestAngle(self, UID):
+	def _requestAngle(self, uid):
 		retVal = False
 
 		request = {}
-		request[UID] = {
+		request[uid] = {
 			"get" : ["angle"]
 		}
 
@@ -59,7 +59,7 @@ class R3Controller:
 
 		if type(response) is dict:
 			# TODO: Properly get angle from dict
-			angle = response[UID]["angle"]
+			angle = response[uid]["angle"]
 			retVal = angle
 		else: 
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
@@ -68,15 +68,11 @@ class R3Controller:
 	
 	def _requestFront(self):
 		response = self.communicator.send("front", {})
+		name = ""
+		if response != {"":""}:
+			name, uid = response.popitem()
 
-		name = False
-		if response != "":
-			request = {}
-			request[response] = {
-				"get" : []
-			}
-			name = self.communicator.send("db", request)
-		return(name)
+		return name
 
 	# Public Functions #
 
@@ -96,11 +92,11 @@ class R3Controller:
 
 		response = self.communicator.send("db", request)
 
-	def getAngleToRobot(self, curAngle, targetUID):
+	def getAngleToRobot(self, curAngle, targetuid):
 		retVal = False
 
 		curCoords = self._requestCoord(self.uid)
-		targCoords = self._requestCoord(targetUID)
+		targCoords = self._requestCoord(targetuid)
 
 		angleToTarget = self.coordinator.getAngleToCoords(curAngle, curCoords, targCoords)
 
