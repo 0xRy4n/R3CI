@@ -88,19 +88,18 @@ class ScribBot:
 	def checkStall(self):
 		while True:
 			stalled = self._robot.getStall()
-			left = self._robot.getObstacle(0)
-			middle = self._robot.getObstacle(1)
-			right = self._robot.getObstacle(2)
-
-			if stalled or left > 6300 or middle > 6300 or right > 6300:
-				self._robot.stop()
-				self.backward(100)
+			dist = self._robot.getDistance()
+            try:
+    			if stalled or dist[1] < 15:
+    				self._robot.stop()
+    				self.backward(100)
+            except:
+                pass
 				
 	def roam(self):
 		turnVal = random.randint(1,360)
 		moveVal = random.randint(50, 300)
 		self.forward(moveVal)
 		self.turn(turnVal)
-		# check for robots
-		# return robot name if found
-		# else return false
+        identify = self.r3controller._requestFront()
+        return(identify)

@@ -27,10 +27,6 @@ class R3Controller:
 		self.communicator.send("db", {self.UID: {"set":{"name":name}}})
 
 	# Private Functions #
-	def _requestFront(self):
-		response = self.communicator.send("front", "")
-		return response
-
 	def _requestCoord(self, UID):
 		retVal = False
 		# Format for a coordinate request of robot with UID
@@ -80,7 +76,7 @@ class R3Controller:
 				"get" : []
 			}
 			name = self.communicator.send("db", request)
-		return name
+		return(name)
 
 	# Public Functions #
 
@@ -95,7 +91,7 @@ class R3Controller:
 	def setCoords(self, coords):
 		request = {}
 		request[self.uid] = {
-			"set" : {"loc" : [coords]}
+			"set" : {"loc" : coords}
 		}
 
 		response = self.communicator.send("db", request)
