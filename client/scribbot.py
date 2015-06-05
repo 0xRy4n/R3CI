@@ -18,6 +18,31 @@
 
 import Myro, Graphics, r3controller, random, time, threading
 
+
+""" Class: ScribBot
+    
+Description:		ScribBot is intended to be the object that serves as the front-end of R3CI. It contains 
+		code with high-level functionality, such as moving the robot forward, or making it turn. It is the object
+		closest to the end-user, and should be used as a replacement to simply importing Myro. Movement in ScribBot
+		is done on a simulated coordinate grid, allowing the server to map the position of the robot in a way
+		that cooresponds with the its physical position. Whenever a function that involves movement is called, 
+		the server is alerted of this change and updates its knowledge of the robots position and orientation 
+		in a database.
+		
+Parameters:	'name' - a string that represents the name of the robot, ex; "bob"
+		'com' - a string cointaining the com port of the bluetooth connection the scribbler
+		'offset' - a list containing two INTEGERS, x and y, specifying the robots initial distance from the origin.
+		'sim' - a condition defaulted to False that if True initializes a scribbler simulation instead of a robot.
+
+To Do:			- Get coordinate movement to work with Fluke forward. The IR sensors are much better and avoiding 
+		obstacles is critical to correctly mapping a robots position. Failure to avoid an obstacle could lead to 
+		things such as the robot telling the server that it just moved 10 feet when in reality its been stuck at 
+		a wall
+			- Check if com port is open before attempting to connect, and close it if it is. Probably
+		could do this with PySerial, but not sure if admin privileges would be needed or how python handles
+		that. This would fix bluetooth connection issues where Calico must be restarted before reconnecting.
+		
+Ryan J Gordon, 2015 """
 class ScribBot:
 
     def __init__(self, name, com, offset, sim=False):
