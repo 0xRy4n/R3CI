@@ -22,8 +22,9 @@ class R3Controller:
 
 	def __init__(self, name, server="localhost"):
 		self.coordinator = coordination.Coordinator()
-		self.communicator = communication.Client(host=server)
-		self.uid = self.communicator.uid
+		self.communicator = communication.Client(name, server)
+		self.UID = communicator.uid
+		self.communicator.send("db", {self.UID: {"set":{"name":name}}})
 
 	# Private Functions #
 	def _requestFront(self):
@@ -68,6 +69,18 @@ class R3Controller:
 			print("Request failed. Server returned the following string:\n\n{}".format(response))
 
 		return(retVal)
+	
+	def _requestFront(self):
+		response = self.communicator.send("front", {})
+
+		name = False
+		if response != "":
+			request = {}
+			request[response] = {
+				"get" : []
+			}
+			name = self.communicator.send("db", request)
+		return name
 
 	# Public Functions #
 
