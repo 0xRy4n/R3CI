@@ -31,6 +31,7 @@ def handle(sender, req, database, logger):
 
 	closest = [None, None]
 	UID = ""
+	name = ""
 	loc = database.gete(sender, "loc")
 	for ID, robot in database.database.iteritems():
 		x, y = translate(robot["loc"], robot["angle"])
@@ -41,4 +42,7 @@ def handle(sender, req, database, logger):
 				closest[1] = y
 				UID = ID
 
-	return UID
+	if UID != "":
+		name = database.gete(UID, "name")
+
+	return {name:UID}

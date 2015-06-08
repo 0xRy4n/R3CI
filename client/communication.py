@@ -42,9 +42,10 @@ class Client():
 
 	# Registers client on server and gives client a UID
 	# Pass classifer as False to disable OCV for particular client
-	def __init__(self, classifier=False, host="localhost", port=9998):
+	def __init__(self, args={}, host="localhost", port=9998):
 		self.server_address = (host, port)
-		init = self.send("reg", {"classifier":classifier})
+		if type(args) is dict:
+			init = self.send("reg", args)
 		self.uid = init["UID"]
 
 	# Send packet to server -> returns response if succeeds, None if fail
