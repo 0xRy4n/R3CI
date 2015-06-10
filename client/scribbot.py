@@ -42,7 +42,7 @@ To Do:			- Get coordinate movement to work with Fluke forward. The IR sensors ar
 		could do this with PySerial, but not sure if admin privileges would be needed or how python handles
 		that. This would fix bluetooth connection issues where Calico must be restarted before reconnecting.
 		
-Ryan J Gordon, 2015 """
+Last Edit: Ryan J Gordon, June 10, 2015 """
 class ScribBot:
 
     def __init__(self, name, com, offset, sim=False):
@@ -69,46 +69,79 @@ class ScribBot:
 		t = threading.Thread(target=self.checkStall, args=())
 		t.daemon = True
 		t.start()
-
-
+		
+		
+""" Function:	forward
+Description: 	Moves robot forward a specified distance in millimeters. While moving, simutaniously updates
+				 the server on it's current position.
+Parameters:		distance ; an integer representing a distance in millimeters.
+To Do:			None
+Last Edit: Ryan J Gordon, July 10, 2015 """
     def forward(self, distance):
 		angle = self._robot.getAngle()
 		(x, y) = self._controller.getForwardCoords(angle, distance)
 		print(x,y)
 		Myro.doTogether([self._robot.moveBy, x, y], [self._controller.setCoords, self.getPosition()])
-
-
+		
+		
+""" Function:	backward
+Description: 	Moves robot backward a specified distance in millimeters. While moving, simutaniously updates
+				 the server on it's current position. Currently only turns the robot by 180 degrees, then moves
+				 forward.
+Parameters:		distance ; an integer representing a distance in millimeters.
+To Do:			Allow robot to actually move backwards without turning.
+Last Edit: Ryan J Gordon, July 10, 2015 """		
     def backward(self, distance):
 		angle = self._robot.getAngle()
 		(x, y) = self._controller.getForwardCoords(angle, distance)
 		Myro.doTogether([self._robot.moveBy, 0-x, 0-y], [self._controller.setCoords, self.getPosition()])
 
 
+""" Function:	turnToFace
+Description: 	Turns robot to face another robot with the specified UID (issued by the server).
+Parameters:		UID ; a unique identifier string issued to each robot by the server. A robot's UID is returned
+				 in addition to it's name upon 'identifying' it when it enters a robots field of vision.
+To Do:			None
+Last Edit: Ryan J Gordon, July 10, 2015 """
     def turnToFace(self, UID):
 		curAngle = self._robot.getAngle()
 		turnAngle = self._controller.getAngleToRobot(UID)
 		self.turn(turnAngle)
 
+		
+""" Function:	turn
+Description: 	Turns robot by a specified (positive) degree. Additionally, updates server on new angle.
+Parameters:		degree ; an integer 1-360 representing the amount in degrees to turn the robot by. 
+To Do:			None
+Last Edit: Ryan J Gordon, July 10, 2015 """
     def turn(self, degree):
 		self._robot.turnBy(degree)
 		curAngle = self._robot.getAngle()
 		self._controller.setAngle(curAngle)
-
+		
+	# Alias for turn(270)
     def turnLeft(self):
 		self.turn(270)
-
+		
+	# Alias for turn(90)
     def turnRight(self):
 		self.turn(90)
-
+	
+	# Alias for Myro's speak function
+	
     def speak(self, words):
 		Myro.speak(words)
+		
+	# Alias for Myro's beep function.
     def beep(time, frequency):
 		self._robot.beep(time, frequency)
-
+	
+	# Alias for Myro's getPosition function.
     def getPosition(self):
 		retVal = self._robot.getPosition()
 		return(retVal)
 
+	# Documentation to be done.
     def checkStall(self):
 		while True:
 		    stalled = self._robot.getStall()
@@ -120,7 +153,8 @@ class ScribBot:
 				    self.backward(100)
 		    except:
 				pass
-		
+			
+	# Documentation to be done.
     def roam(self):
 		turnVal = random.randint(1,360)
 		moveVal = random.randint(50, 300)
