@@ -75,7 +75,7 @@ class ScribBot:
 Description: 	Moves robot forward a specified distance in millimeters. While moving, simutaniously updates
 		 the server on it's current position.
 Parameters:	distance ; an integer representing a distance in millimeters.
-To Do:			None
+To Do:		None
 Last Edit: Ryan J Gordon, July 10, 2015 """
     def forward(self, distance):
 		angle = self._robot.getAngle()
