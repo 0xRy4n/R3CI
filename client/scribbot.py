@@ -73,8 +73,8 @@ class ScribBot:
 		
 """ Function:	forward
 Description: 	Moves robot forward a specified distance in millimeters. While moving, simutaniously updates
-				 the server on it's current position.
-Parameters:		distance ; an integer representing a distance in millimeters.
+		 the server on it's current position.
+Parameters:	distance ; an integer representing a distance in millimeters.
 To Do:			None
 Last Edit: Ryan J Gordon, July 10, 2015 """
     def forward(self, distance):
@@ -86,10 +86,10 @@ Last Edit: Ryan J Gordon, July 10, 2015 """
 		
 """ Function:	backward
 Description: 	Moves robot backward a specified distance in millimeters. While moving, simutaniously updates
-				 the server on it's current position. Currently only turns the robot by 180 degrees, then moves
-				 forward.
-Parameters:		distance ; an integer representing a distance in millimeters.
-To Do:			Allow robot to actually move backwards without turning.
+		 the server on it's current position. Currently only turns the robot by 180 degrees, then moves
+		 forward.
+Parameters:	distance ; an integer representing a distance in millimeters.
+To Do:		Allow robot to actually move backwards without turning.
 Last Edit: Ryan J Gordon, July 10, 2015 """		
     def backward(self, distance):
 		angle = self._robot.getAngle()
@@ -99,9 +99,9 @@ Last Edit: Ryan J Gordon, July 10, 2015 """
 
 """ Function:	turnToFace
 Description: 	Turns robot to face another robot with the specified UID (issued by the server).
-Parameters:		UID ; a unique identifier string issued to each robot by the server. A robot's UID is returned
-				 in addition to it's name upon 'identifying' it when it enters a robots field of vision.
-To Do:			None
+Parameters:	UID ; a unique identifier string issued to each robot by the server. A robot's UID is returned
+		 in addition to it's name upon 'identifying' it when it enters a robots field of vision.
+To Do:		None
 Last Edit: Ryan J Gordon, July 10, 2015 """
     def turnToFace(self, UID):
 		curAngle = self._robot.getAngle()
@@ -111,8 +111,8 @@ Last Edit: Ryan J Gordon, July 10, 2015 """
 		
 """ Function:	turn
 Description: 	Turns robot by a specified (positive) degree. Additionally, updates server on new angle.
-Parameters:		degree ; an integer 1-360 representing the amount in degrees to turn the robot by. 
-To Do:			None
+Parameters:	degree ; an integer 1-360 representing the amount in degrees to turn the robot by. 
+To Do:		None
 Last Edit: Ryan J Gordon, July 10, 2015 """
     def turn(self, degree):
 		self._robot.turnBy(degree)
