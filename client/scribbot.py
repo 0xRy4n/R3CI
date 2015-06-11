@@ -44,11 +44,15 @@ To Do:			- Get coordinate movement to work with Fluke forward. The IR sensors ar
 		
 Last Edit: Ryan J Gordon, June 10, 2015 """
 class ScribBot:
-
+	
+	""" TODO: Pass in server IP parameter """
     def __init__(self, name, com, offset, sim=False):
-		if not sim:
+    	
+		if not sim: # If not a simulation, do:
+			""" TODO: Clear bluetooth connection """
 		    self._robot = Myro.makeRobot("Scribbler", com)
-		else:
+		    
+		else: # Else, setup Simulation
 		    self._sim = Myro.Simulation("Simulation", 600, 600, Graphics.Color("lightgrey"))
 		    # Add lights first:
 		    self._sim.addLight((200, 200), 25, Graphics.Color("orange"))
@@ -60,23 +64,25 @@ class ScribBot:
 		    self._sim.setup()
 		    self._robot = Myro.makeRobot("SimScribbler", self._sim)
 
-		self._controller = r3controller.R3Controller(name, "192.168.1.119")
+		self._controller = r3controller.R3Controller(name, "192.168.1.119") # Replace second argument with IP parameter
 		self._robot.setPosition(offset[0], offset[1])
 		self.name = name
 		self._robot.setName(name)
 
-		self._robot.setIRPower(120)
+		self._robot.setIRPower(120) # This number may need tampering, or possibly dynamic assigning.
+		
+		# Runs checkstall in seperate thread parallel to other code
 		t = threading.Thread(target=self.checkStall, args=())
 		t.daemon = True
 		t.start()
 		
 		
-""" Function:	forward
-Description: 	Moves robot forward a specified distance in millimeters. While moving, simutaniously updates
-		 the server on it's current position.
-Parameters:	distance ; an integer representing a distance in millimeters.
-To Do:		None
-Last Edit: Ryan J Gordon, July 10, 2015 """
+### Function:	forward
+# Description: 	Moves robot forward a specified distance in millimeters. While moving, simutaniously updates
+#		 the server on it's current position.
+# Parameters:	distance ; an integer representing a distance in millimeters.
+# To Do:	None
+### Last Edit: Ryan J Gordon, July 10, 2015
     def forward(self, distance):
 		angle = self._robot.getAngle()
 		(x, y) = self._controller.getForwardCoords(angle, distance)
@@ -84,77 +90,77 @@ Last Edit: Ryan J Gordon, July 10, 2015 """
 		Myro.doTogether([self._robot.moveBy, x, y], [self._controller.setCoords, self.getPosition()])
 		
 		
-""" Function:	backward
-Description: 	Moves robot backward a specified distance in millimeters. While moving, simutaniously updates
-		 the server on it's current position. Currently only turns the robot by 180 degrees, then moves
-		 forward.
-Parameters:	distance ; an integer representing a distance in millimeters.
-To Do:		Allow robot to actually move backwards without turning.
-Last Edit: Ryan J Gordon, July 10, 2015 """		
+### Function:	backward
+# Description: 	Moves robot backward a specified distance in millimeters. While moving, simutaniously updates
+#		 the server on it's current position. Currently only turns the robot by 180 degrees, then moves
+# 		 forward.
+# Parameters:	distance ; an integer representing a distance in millimeters.
+# To Do:	Allow robot to actually move backwards without turning.
+### Last Edit: Ryan J Gordon, July 10, 2015	
     def backward(self, distance):
 		angle = self._robot.getAngle()
 		(x, y) = self._controller.getForwardCoords(angle, distance)
 		Myro.doTogether([self._robot.moveBy, 0-x, 0-y], [self._controller.setCoords, self.getPosition()])
 
 
-""" Function:	turnToFace
-Description: 	Turns robot to face another robot with the specified UID (issued by the server).
-Parameters:	UID ; a unique identifier string issued to each robot by the server. A robot's UID is returned
-		 in addition to it's name upon 'identifying' it when it enters a robots field of vision.
-To Do:		None
-Last Edit: Ryan J Gordon, July 10, 2015 """
+### Function:	turnToFace 
+# Description: 	Turns robot to face another robot with the specified UID (issued by the server).
+# Parameters:	UID ; a unique identifier string issued to each robot by the server. A robot's UID is returned
+#		 in addition to it's name upon 'identifying' it when it enters a robots field of vision.
+# To Do:	None
+### Last Edit: Ryan J Gordon, July 10, 2015
     def turnToFace(self, UID):
 		curAngle = self._robot.getAngle()
 		turnAngle = self._controller.getAngleToRobot(UID)
 		self.turn(turnAngle)
 
 		
-""" Function:	turn
-Description: 	Turns robot by a specified (positive) degree. Additionally, updates server on new angle.
-Parameters:	degree ; an integer 1-360 representing the amount in degrees to turn the robot by. 
-To Do:		None
-Last Edit: Ryan J Gordon, July 10, 2015 """
+### Function:	turn
+# Description: 	Turns robot by a specified (positive) degree. Additionally, updates server on new angle.
+# Parameters:	degree ; an integer 1-360 representing the amount in degrees to turn the robot by. 
+# To Do:	None
+# Last Edit: Ryan J Gordon, July 10, 2015 """
     def turn(self, degree):
 		self._robot.turnBy(degree)
 		curAngle = self._robot.getAngle()
 		self._controller.setAngle(curAngle)
 		
-	# Alias for turn(270)
+# Alias for turn(270)
     def turnLeft(self):
 		self.turn(270)
 		
-	# Alias for turn(90)
+# Alias for turn(90)
     def turnRight(self):
 		self.turn(90)
 	
-	# Alias for Myro's speak function
-	
+# Alias for Myro's speak function
     def speak(self, words):
 		Myro.speak(words)
 		
-	# Alias for Myro's beep function.
+# Alias for Myro's beep function.
     def beep(time, frequency):
 		self._robot.beep(time, frequency)
 	
-	# Alias for Myro's getPosition function.
+# Alias for Myro's getPosition function.
     def getPosition(self):
 		retVal = self._robot.getPosition()
 		return(retVal)
 
-	# Documentation to be done.
+# Documentation to be done.
     def checkStall(self):
 		while True:
 		    stalled = self._robot.getStall()
+		    """ TODO: Adjust distance sensor for higher sensitivity in object detection """
 		    dist = self._robot.getDistance()
 		    print(dist)
 		    try:
-				if stalled or (dist[0] + dist[1]) < 22 or dist[0] is 0 or dist[1] is 0:
+				if stalled or (dist[0] + dist[1]) < 22 or dist[0] is 0 or dist[1] is 0: # Numbers might need tweaking.
 				    self._robot.stop()
 				    self.backward(100)
 		    except:
 				pass
 			
-	# Documentation to be done.
+# Documentation to be done.
     def roam(self):
 		turnVal = random.randint(1,360)
 		moveVal = random.randint(50, 300)
