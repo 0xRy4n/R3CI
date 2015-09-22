@@ -20,7 +20,7 @@ relative to that direction. If they were facing that direction, they would have 
 You must then pass that angle into ScribBot. 
 
 Because R3CI relies so heavily on mathematics to keep track of the the robots, you must
-be as precise as possible when taking this measurements. For simplicity, it is recommended
+be as precise as possible when taking these measurements. For simplicity, it is recommended
 you do this on floor with 1 sqaure foot tiles.
 
 You will also need to have a central computer to serve as the medium for robot 
