@@ -32,21 +32,23 @@ Description:		ScribBot is intended to be the object that serves as the front-end
 Parameters:	'name' - a string that represents the name of the robot, ex; "bob"
 		'com' - a string cointaining the com port of the bluetooth connection the scribbler
 		'offset' - a list containing two INTEGERS, x and y, specifying the robots initial distance from the origin.
+		'server' - a string that contains the IP address of the computer running server.py
 		'sim' - a condition defaulted to False that if True initializes a scribbler simulation instead of a robot.
 
 To Do:			- Get coordinate movement to work with Fluke forward. The IR sensors are much better and avoiding 
 		obstacles is critical to correctly mapping a robots position. Failure to avoid an obstacle could lead to 
 		things such as the robot telling the server that it just moved 10 feet when in reality its been stuck at 
 		a wall
+		
 			- Check if com port is open before attempting to connect, and close it if it is. Probably
 		could do this with PySerial, but not sure if admin privileges would be needed or how python handles
 		that. This would fix bluetooth connection issues where Calico must be restarted before reconnecting.
 		
-Last Edit: Ryan J Gordon, June 10, 2015 """
+Last Edit: Ryan J Gordon, September 15th, 2015 """
 class ScribBot:
 	
 	""" TODO: Pass in server IP parameter """
-    def __init__(self, name, com, offset, sim=False):
+    def __init__(self, name, com, offset, server, sim=False):
     	
 		if not sim: # If not a simulation, do:
 			""" TODO: Clear bluetooth connection """
@@ -64,7 +66,7 @@ class ScribBot:
 		    self._sim.setup()
 		    self._robot = Myro.makeRobot("SimScribbler", self._sim)
 
-		self._controller = r3controller.R3Controller(name, "192.168.1.119") # Replace second argument with IP parameter
+		self._controller = r3controller.R3Controller(name, server) # Replace second argument with IP parameter
 		self._robot.setPosition(offset[0], offset[1])
 		self.name = name
 		self._robot.setName(name)
