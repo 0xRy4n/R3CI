@@ -16,5 +16,5 @@ will later be passed as a parameter when initializing the ScribBot class.
 
 *R3CI requires IPRE's Calico to run.*
 
-There is a known issue where Calico must be restarted after each attempt to connect to the robot.
-If you are receiving a bluetooth error, restart Calico.*
+**There is a known issue where Calico must be restarted after each attempt to connect to the robot.**
+**If you are receiving a bluetooth error, restart Calico.**
