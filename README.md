@@ -6,7 +6,7 @@ communicate, perform complex coordination as a group, accurately identify
 other robots, and differentiate collisions between robots, along with avoiding
 other obstacles such as walls.
 
-ScribBot.py serves as the interface for R3CI. Those who wish to use R3CI as is should
+scribbot.py serves as the interface for R3CI. Those who wish to use R3CI as is should
 refer to the documentation within that file. 
 
 You will also need to have a central computer to serve as the medium for robot 
