@@ -44,7 +44,7 @@ To Do:			- Get coordinate movement to work with Fluke forward. The IR sensors ar
 		could do this with PySerial, but not sure if admin privileges would be needed or how python handles
 		that. This would fix bluetooth connection issues where Calico must be restarted before reconnecting.
 		
-Last Edit: Ryan J Gordon, September 15th, 2015 """
+Last Edit: Ryan J Gordon, September 22nd, 2015 """
 class ScribBot:
 	
 	""" TODO: Pass in server IP parameter """
